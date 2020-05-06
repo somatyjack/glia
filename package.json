@@ -1,0 +1,27 @@
+{
+  "name": "glia",
+  "description": "Lightweight Microservice Framework",
+  "version": "0.0.10",
+  "homepage": "https://github.com/somatyjack/glia",
+  "private": false,
+  "keywords": [
+    "glia",
+    "microservice",
+    "routing",
+    "validation",
+    "sanitization",
+    "service",
+    "model",
+    "express"
+  ],
+  "author": "Jack Milles",
+  "dependencies": {
+    "express": "^4.17.1",
+    "cors": "^2.8.5",
+    "body-parser": "^1.19.0",
+    "mysql2": "^1.6.5",
+    "@hapi/joi": "^15.0.1",
+    "@hapi/joi-date": "^1.3.0"
+  },
+  "devDependencies": {}
+}
