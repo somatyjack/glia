@@ -1,6 +1,7 @@
 /**
  * Set of Errors for Client to better handle user behaviour
  * Can be disabled via Config and direct http errors will be returned instead
+ * Errors should never exposed location of the error - strictly for logging
  */
 
 let errCodes;
@@ -9,10 +10,9 @@ let errCodes;
 class ServiceError extends Error {
   constructor(message, errLocation) {
     super();
-    console.log(errCodes);
     this.httpCode = errCodes.ServiceError.httpCode;
-    this.statusCode = errCodes.ServiceError.statusCode;
-    this.location = !errLocation ? "" : errLocation;
+    this.customCode = errCodes.ServiceError.customCode;
+    this.errLocation = !errLocation ? "" : errLocation;
     this.message = message;
   }
 }
@@ -22,7 +22,7 @@ class ServiceSuccess extends Error {
   constructor(data) {
     super();
     this.httpCode = errCodes.ServiceSuccess.httpCode;
-    this.statusCode = errCodes.ServiceSuccess.statusCode;
+    this.customCode = errCodes.ServiceSuccess.customCode;
     this.message = data;
   }
 }
@@ -32,7 +32,7 @@ class ServiceInfo extends Error {
   constructor(message) {
     super();
     this.httpCode = errCodes.ServiceInfo.httpCode;
-    this.statusCode = errCodes.ServiceInfo.statusCode;
+    this.customCode = errCodes.ServiceInfo.customCode;
     this.message = message;
   }
 }
@@ -43,7 +43,7 @@ class DbError extends Error {
   constructor(message, errLocation) {
     super();
     this.httpCode = errCodes.DbError.httpCode;
-    this.statusCode = errCodes.DbError.statusCode;
+    this.customCode = errCodes.DbError.customCode;
     this.errLocation = !errLocation ? "" : errLocation;
     this.message = message;
   }
@@ -54,7 +54,7 @@ class ValidationError extends Error {
   constructor(errors) {
     super();
     this.httpCode = errCodes.ValidationError.httpCode;
-    this.statusCode = errCodes.ValidationError.statusCode;
+    this.customCode = errCodes.ValidationError.customCode;
     this.message = errors;
   }
 }
@@ -63,7 +63,7 @@ class NotFoundError extends Error {
   constructor(err) {
     super();
     this.httpCode = errCodes.NotFoundError.httpCode;
-    this.statusCode = errCodes.NotFoundError.statusCode;
+    this.customCode = errCodes.NotFoundError.customCode;
     this.message = err;
   }
 }
@@ -73,17 +73,17 @@ class KernelError extends Error {
   constructor(err) {
     super();
     this.httpCode = errCodes.KernelError.httpCode;
-    this.statusCode = errCodes.KernelError.statusCode;
+    this.customCode = errCodes.KernelError.customCode;
     this.message = err;
   }
 }
 
 // service response handler
 const handleResponse = (err, res) => {
-  const { httpCode, statusCode, message } = err;
-  console.log(err);
+  const { httpCode, customCode, message } = err;
+
   res.status(httpCode).json({
-    status: statusCode,
+    status: customCode,
     resp: message,
   });
 };

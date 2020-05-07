@@ -1,22 +1,3 @@
-/*
-	Micro-service kernel contains logic for:
-	- data sanitization
-	- data validation against schema
-	- service execution based on provided parameters
-*/
-
-//const logger = require("../middleware/logger/logger");
-// const { PostAndForget } = require("../utils/utils");
-
-// --- Sanitization ------
-
-/*
-	0 - send NewActivity if required. Only for Post Services
-	1 - sanitize data if required
-	2 - validate data sent within request
-	3 - execute load/save or delete service
-*/
-
 const hdlServiceChecks = (req, next) => {
   const { config, validate, sanitize } = req.app.kernel;
 
@@ -29,7 +10,6 @@ const hdlServiceChecks = (req, next) => {
     });
   }
 */
-
   // copy all into one
   let data = {};
   for (const key in req.params) data[key] = req.params[key];
@@ -50,6 +30,7 @@ const hdlServiceChecks = (req, next) => {
  *	pubservice can access only public services
  */
 /* TO REMOVE */
+/*
 const routeAccessProcessor = (allRoutes) => {
   let authRoutes = {};
   let publicRoutes = {};
@@ -86,8 +67,9 @@ const routeAccessProcessor = (allRoutes) => {
     publicRoutes,
   };
 };
+*/
 
 module.exports = {
   hdlServiceChecks,
-  routeAccessProcessor,
+  //routeAccessProcessor,
 };

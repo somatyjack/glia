@@ -78,6 +78,7 @@ const logStreams = {
   db_error: "error",
   not_found: "error",
   kernel_error: "error",
+  service_error: "error",
 };
 
 let logTypes = {};
@@ -98,6 +99,8 @@ const options = {
 */
 
     gblConfig = config;
+
+    if (!config.ms.LOGS_ENABLED) return;
 
     currentDate = getToday();
     prevDate = currentDate; // init prev date on load
