@@ -4,7 +4,7 @@ Lightweight Microservice Framework
 
 [![npm (scoped)](https://img.shields.io/npm/v/glia)](https://github.com/somatyjack/glia)
 
-[![Test Coverage](https://codeclimate.com/github/somatyjack/glia/badges/coverage.svg)](https://codeclimate.com/github/somatyjack/glia)
+[![codecov](https://codecov.io/gh/somatyjack/glia/branch/master/graph/badge.svg)](https://codecov.io/gh/somatyjack/glia)
 
 ## For those, who want to go real web bananas
 
