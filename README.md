@@ -27,11 +27,10 @@ List of features:
 - Error handling. Option to customize response override
 - Easy service pathnames processing
 
-What do you want to see as a next feature:
-/polls Option1 'Option 2' "Option 3"
+# What do you want to see as a next feature:
 
-# Automatically replace with the following markdown =>
+/polls 'Error extension' 'Option 2' "Option 3"
 
-[![](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option1)](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option1/vote)
+[![](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Error%20extension)](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Error%20extension/vote)
 [![](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option%202)](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option%202/vote)
 [![](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option%203)](https://api.gh-polls.com/poll/01BY7ECS60GG8F9AR1VMR8745S/Option%203/vote)
