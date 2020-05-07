@@ -43,10 +43,6 @@ const igniter = {
       handleResponse(err, res);
     });
 
-    // to delete
-    const errors = require("./error.kernel");
-    errors.InitErrorCodes(config.ms.ERROR_CODES);
-
     const port = config.ms.PORT;
 
     app.listen(port, function () {

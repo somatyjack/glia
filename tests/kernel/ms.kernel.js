@@ -1,3 +1,5 @@
+"use strict";
+
 /*
 	Micro-service kernel contains logic for:
 	- data sanitization
@@ -5,8 +7,16 @@
 	- service execution based on provided parameters
 */
 
-//const logger = require("../middleware/logger/logger");
-// const { PostAndForget } = require("../utils/utils");
+//const CONFIG = require('../config/config');
+const logger = require("../middleware/logger/logger");
+const Joi = require("@hapi/joi");
+//const route = require("../../../global_routes");
+const { PostAndForget } = require("../utils/utils");
+const {
+  ServiceError,
+  KernelError,
+  ValidationError,
+} = require("./error.kernel");
 
 // --- Sanitization ------
 
@@ -87,7 +97,19 @@ const routeAccessProcessor = (allRoutes) => {
   };
 };
 
-module.exports = {
+//from stackoverflow.com
+const uuidv4 = function () {
+  return "xxxxxxxxyx".replace(/[xy]/g, function (c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+const kernel = {
   hdlServiceChecks,
   routeAccessProcessor,
+  uuidv4,
 };
+
+module.exports = kernel;

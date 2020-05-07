@@ -12,31 +12,31 @@ const {
 const logger = require("../middleware/logger/logger");
 
 const errResponder = {
-  SERVICE_ERROR: (errMessage, errLocation) => {
+  service_error: (errMessage, errLocation) => {
     logger.log("error", errMessage, errLocation);
     throw new ServiceError(
       "Service error occurred. We are investigating and will take appropriate action to resolve it."
     );
   },
-  DB_ERROR: (errMessage, errLocation) => {
+  db_error: (errMessage, errLocation) => {
     logger.log("db_error", errMessage, errLocation);
     // we do not inform user of the real problem
     throw new DbError("Data problem occurred. We are investigating");
   },
-  SERVICE_INFO: (info) => {
+  service_info: (info) => {
     throw new ServiceInfo(info);
   },
-  SERVICE_SUCCESS: (info) => {
+  service_success: (info) => {
     throw new ServiceSuccess(info);
   },
-  VALIDATION_ERROR: (errors) => {
+  validation_error: (errors) => {
     throw new ValidationError(errors);
   }, // array
-  NOT_FOUND_ERROR: (err, errLocation) => {
+  not_found_error: (err, errLocation) => {
     logger.log("not_found", err, errLocation);
     throw new NotFoundError("Requested resource was not found");
   },
-  KERNEL_ERROR: (err, errLocation) => {
+  kernel_error: (err, errLocation) => {
     logger.log("kernel_error", err, errLocation);
     throw new KernelError(
       "Service ran into a problem. Seems like something went wrong. We are investigating"
@@ -45,7 +45,7 @@ const errResponder = {
 };
 
 const controller = async (req, res, next) => {
-  const { services, validation } = req.app.kernel;
+  const { services } = req.app.kernel;
 
   const method = req.method;
 
@@ -74,7 +74,7 @@ const controller = async (req, res, next) => {
       });
   } catch (err) {
     // this will trigger error handling middleware
-    // and response will be sent back
+    // and response will be send back
     // this won't log anything
     next(err);
   }
