@@ -21,27 +21,43 @@ function breakNestedRoute(req, routes) {
   // if nothing is sent array[0] = '/'
   if (params.length === 1) return null;
 
-  if (params.length === 2)
+  if (params.length === 2) {
+    if (!routes[req.method][params[1]]) return null;
     return {
       route: routes[req.method][params[1]],
       isSingleton: false,
     };
+  }
+
+  // check if no.of params is even or odd
+  const isSingleton = params.length % 2 === 1 ? true : false;
 
   if (params.length > 1) {
-    let currentSubRoute = routes[req.method];
-    let subRoute = params[1];
-    // recursive
-    for (let idx = 2; idx <= params.length; idx += 2) {
-      currentSubRoute = currentSubRoute[subRoute];
-      const paramName = currentSubRoute.paramName;
+    // this allows to identify is we are dealing with singleton or butch processing
+    const startIndex = isSingleton ? params.length - 2 : params.length - 1;
 
-      if (params[idx]) req.params[paramName] = params[idx];
-      subRoute = params[idx + 1];
+    // get all routes for current method
+    let currentSubRoute = routes[req.method];
+
+    let pathName = params[1];
+    for (let idx = 3; idx <= params.length - 1; idx += 2) {
+      pathName += `/${params[idx]}`;
+    }
+    // starting from the end, extract service name
+    let idx = startIndex;
+
+    currentSubRoute = currentSubRoute[pathName];
+    const paramExpected = currentSubRoute.paramExpected;
+
+    if (paramExpected !== "") {
+      // if singleton
+      if (params[idx + 1]) req.params[paramExpected] = params[idx + 1];
+      else req.params[paramExpected] = params[idx - 1]; // batch
     }
 
     return {
       route: currentSubRoute,
-      isSingleton: params.length % 2 === 1 ? true : false, // check if batch or singleton is called
+      isSingleton, // check if batch or singleton is called
     };
   }
 }
@@ -62,8 +78,8 @@ function validation(req, res, next) {
       `Kernel/Failed to parse route:${req.params[0]}. Route does not exist or there is syntax problem`
     );
   }
-
-  const { route, isSingleton } = routeObj;
+  console.log(routeObj);
+  console.log("222222222222222222222222222222");
 
   // basec on accessType use public routes or auth routes,
   // this will restrict access for public routes and allow auth routes to access everything
@@ -89,12 +105,17 @@ function validation(req, res, next) {
     });
   }
 
-  const routeType =
-    req.method === "GET" ? req.query.routeType : req.body.routeType;
-
+  console.log(req.params);
   try {
     if (!routeObj)
-      throw new KernelError(`Kernel/Failed url patname is not specified`);
+      throw new KernelError(
+        `Kernel/Failed url patname is not specified or is not correct`
+      );
+
+    const { route, isSingleton } = routeObj;
+
+    const routeType =
+      req.method === "GET" ? req.query.routeType : req.body.routeType;
 
     const serviceRouteType = route.routeType;
 
@@ -119,7 +140,7 @@ function validation(req, res, next) {
     next();
   } catch (e) {
     // if route not found, throw 404
-    if (!serviceObj) next(new NotFoundError(e.message, "KernelRouter"));
+    if (!routeObj) next(new NotFoundError(e.message, "KernelRouter"));
     else {
       next(new ServiceError(e.message, "KernelRouter"));
       //res.status(500).send(e);

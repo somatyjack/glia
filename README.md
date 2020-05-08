@@ -1,6 +1,6 @@
 # Glia
 
-Lightweight Microservice Framework
+NextGen Microservice Framework
 
 [![npm (scoped)](https://img.shields.io/npm/v/glia)](https://github.com/somatyjack/glia)
 
