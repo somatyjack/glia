@@ -33,7 +33,7 @@ const igniter = {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.use(router);
+    app.use(`/api/${config.ms.MS_NAME}`, router);
 
     // add properties to be accessable from req.app.kernel
     app.kernel = appModules;

@@ -1,4 +1,3 @@
-"use strict";
 const Joi = require("@hapi/joi");
 const { DbError } = require("./error.kernel");
 

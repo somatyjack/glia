@@ -1,14 +1,9 @@
-"use strict";
-
 const express = require("express");
 const router = express.Router({ mergeParams: true });
 const controller = require("./controller.kernel");
 
 const { setReqUserVars } = require("./utils.kernel");
 const { ServiceError, KernelError, NotFoundError } = require("./error.kernel");
-/*
-	shared validation of service betwen get/post/delete routes
-*/
 
 // extract nested routes
 // TODO: Optimize more?
@@ -46,7 +41,8 @@ function breakNestedRoute(req, routes) {
     // starting from the end, extract service name
     let idx = startIndex;
 
-    currentSubRoute = currentSubRoute[pathName];
+    const apiVersion = req.headers.apiversion ? req.headers.apiversion : "v1";
+    currentSubRoute = currentSubRoute[`/${apiVersion}/${pathName}`];
     const paramExpected = currentSubRoute.paramExpected;
 
     if (paramExpected !== "") {
@@ -63,9 +59,8 @@ function breakNestedRoute(req, routes) {
 }
 
 function validation(req, res, next) {
-  const accessType = req.accessType;
-
   const { services, routes } = req.app.kernel;
+  const { method } = req;
 
   let routeObj = {};
   try {
@@ -73,19 +68,13 @@ function validation(req, res, next) {
     // remove full route from params
     delete req.params[0];
   } catch (e) {
-    console.log(e);
     throw new KernelError(
-      `Kernel/Failed to parse route:${req.params[0]}. Route does not exist or there is syntax problem`
+      `Kernel/Failed to parse route:${req.params[0]}. Route does not exist|| icorrect route version || syntax`
     );
   }
-  console.log(routeObj);
-  console.log("222222222222222222222222222222");
-
-  // basec on accessType use public routes or auth routes,
-  // this will restrict access for public routes and allow auth routes to access everything
 
   // for authservice only set user's variables
-  if (accessType === "authservice") {
+  if (req.accessType === "authservice") {
     // intialize vars passed by load balancer -> userId,profileId
     setReqUserVars(req);
 
@@ -94,18 +83,6 @@ function validation(req, res, next) {
     console.log(req.body);
   }
 
-  const met = req.method;
-
-  // considering only GET/POST/DELETE
-  // HACK -> because we have a problem with Image service see doc
-  // copy all keys from query to body ONLY FOR POST
-  if (req.method === "POST") {
-    Object.keys(req.query).forEach((key) => {
-      req.body[key] = req.query[key];
-    });
-  }
-
-  console.log(req.params);
   try {
     if (!routeObj)
       throw new KernelError(
@@ -115,7 +92,7 @@ function validation(req, res, next) {
     const { route, isSingleton } = routeObj;
 
     const routeType =
-      req.method === "GET" ? req.query.routeType : req.body.routeType;
+      method === "GET" ? req.query.routeType : req.body.routeType;
 
     const serviceRouteType = route.routeType;
 
@@ -126,14 +103,12 @@ function validation(req, res, next) {
     // check that routeType of the route matches with routeType of the requestName
     if (serviceRouteType !== routeType && serviceRouteType !== "both")
       throw new KernelError(
-        `Kernel/Failed to find ${req.method} Request: for routeType: ${routeType}`
+        `Kernel/Failed to find ${method} Request: for routeType: ${routeType}`
       );
 
     // check if such service is available within service file
-    if (!services[met][serviceName])
-      throw new KernelError(
-        `Kernel/Failed to find specified service: ${serviceName}`
-      );
+    if (!services[method][serviceName])
+      throw new KernelError(`Kernel/Failed to find service`);
     // this confirm that serviceName exists
     req.serviceName = serviceName;
 
@@ -143,7 +118,6 @@ function validation(req, res, next) {
     if (!routeObj) next(new NotFoundError(e.message, "KernelRouter"));
     else {
       next(new ServiceError(e.message, "KernelRouter"));
-      //res.status(500).send(e);
     }
   }
 }
