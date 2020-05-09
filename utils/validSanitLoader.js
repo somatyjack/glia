@@ -17,7 +17,7 @@ function schemasLoader(basePath, fileType) {
     // try to load file
     let schema = false;
     try {
-      schema = require(`${basePath}/${key.toUpperCase()}.${fileType}`);
+      schema = require(`${basePath}/${key.toLocaleLowerCase()}.${fileType}`);
     } catch (e) {
       /* do not enforce having a file in directory
         if (e.code === "MODULE_NOT_FOUND") {

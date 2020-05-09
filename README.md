@@ -14,11 +14,11 @@ Lightweight Microservice Framework
 
 ## Configure your service
 
-## Router - Simple GET
+## Setup routing
 
-## Service - Business Logic
+## Define service - Business Logic
 
-## Model - ( RAW | Sequelizer )
+## Define model - ( RAW | Sequelizer )
 
 List of features:
 

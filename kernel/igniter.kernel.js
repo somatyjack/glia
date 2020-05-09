@@ -29,6 +29,11 @@ const igniter = {
       next();
     }, cors(corsOptions(whiteList)));
 
+    /*
+    app.use((req, res, next) => {
+      console.log("request time:", new Date().getTime());
+    });
+*/
     // Parse incoming requests data
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -54,6 +59,11 @@ const igniter = {
       console.log(`Server: ${config.ms.MS_NAME} started on port: ${port}`);
       console.log(`Logs path: ${config.ms.LOGS_PATH}`);
       console.log(`------------------------------------------------`);
+    });
+
+    process.on("unhandledRejection", (error, promise) => {
+      console.log(" promise rejection here: ", promise);
+      console.log(" The error was: ", error);
     });
 
     process.on("SIGINT", () => {

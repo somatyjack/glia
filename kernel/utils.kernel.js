@@ -31,8 +31,6 @@ const utils = {
     var profileId = parseInt(req.header("profileId"));
     var profileTz = req.header("profileTz"); // Time zone
 
-    //console.log(req.header('uname'));
-
     if (!uId && !profileId) return;
 
     if (req.method == "GET") {
