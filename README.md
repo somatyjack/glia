@@ -12,12 +12,12 @@ Lightweight Microservice Framework
 
 # Getting started in 4 simple steps
 
-## Configure your service
+### Configure your service
 
 > Database \
-> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available) \
+> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available)
 
-## Setup routing
+### Setup routing
 
 ```JavaScript
 const timeZones = {
@@ -31,7 +31,7 @@ const routes = {
 }
 ```
 
-## Define service - Business Logic
+### Define service - Business Logic
 
 > all passed params will be available within data object
 
@@ -42,7 +42,7 @@ LoadTimeZones: async (data) => {
 }
 ```
 
-## Define model - ( RAW || Sequelizer )
+### Define model - ( RAW || Sequelizer )
 
 > Raw MySQL access example
 
