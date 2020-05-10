@@ -10,6 +10,8 @@ const { ServiceError, KernelError, NotFoundError } = require("./error.kernel");
 function breakNestedRoute(req, routes) {
   const paramString = req.params[0];
   const params = paramString.split("/");
+  const apiVersion = req.headers.apiversion || "v1";
+  let pathName = `/${apiVersion}/${params[1]}`;
 
   // extract every second param
   // example /countries/2/regions/14/cities/367
@@ -17,9 +19,9 @@ function breakNestedRoute(req, routes) {
   if (params.length === 1) return null;
 
   if (params.length === 2) {
-    if (!routes[req.method][params[1]]) return null;
+    if (!routes[req.method][pathName]) return null;
     return {
-      route: routes[req.method][params[1]],
+      route: routes[req.method][pathName],
       isSingleton: false,
     };
   }
@@ -34,15 +36,13 @@ function breakNestedRoute(req, routes) {
     // get all routes for current method
     let currentSubRoute = routes[req.method];
 
-    let pathName = params[1];
     for (let idx = 3; idx <= params.length - 1; idx += 2) {
       pathName += `/${params[idx]}`;
     }
+
     // starting from the end, extract service name
     let idx = startIndex;
-
-    const apiVersion = req.headers.apiversion ? req.headers.apiversion : "v1";
-    currentSubRoute = currentSubRoute[`/${apiVersion}/${pathName}`];
+    currentSubRoute = currentSubRoute[pathName];
     const paramExpected = currentSubRoute.paramExpected;
 
     if (paramExpected !== "") {
