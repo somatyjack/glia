@@ -12,10 +12,10 @@ const { corsOptions } = require("./utils.kernel");
 const igniter = {
   start: function (appModules) {
     const { config } = appModules;
-
-    // Set up a whitelist and check against it:
-    var whiteList = config.all.corsWhiteList();
     logger.init(config);
+
+    // TODO: Research on value of validating src at the micro service level
+    const whiteList = config.shared.corsWhiteList();
 
     app.use((req, res, next) => {
       // if host requested resource internally -> origin will be undefined, so we need to check that host
@@ -29,16 +29,11 @@ const igniter = {
       next();
     }, cors(corsOptions(whiteList)));
 
-    /*
-    app.use((req, res, next) => {
-      console.log("request time:", new Date().getTime());
-    });
-*/
     // Parse incoming requests data
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
 
-    app.use(`/api/${config.ms.MS_NAME}`, router);
+    app.use(`/`, router);
 
     // add properties to be accessable from req.app.kernel
     app.kernel = appModules;
@@ -58,16 +53,18 @@ const igniter = {
       console.log(`------------------------------------------------`);
       console.log(`Server: ${config.ms.MS_NAME} started on port: ${port}`);
       console.log(`Logs path: ${config.ms.LOGS_PATH}`);
+      console.log(`Validation path: ${config.ms.VALIDATION_PATH}`);
+      console.log(`Sanitization path: ${config.ms.SANITIZATION_PATH}`);
       console.log(`------------------------------------------------`);
     });
 
     process.on("unhandledRejection", (error, promise) => {
-      console.log(" promise rejection here: ", promise);
-      console.log(" The error was: ", error);
+      console.log("Promise rejection: ", promise);
+      console.log("The error was: ", error);
     });
 
     process.on("SIGINT", () => {
-      console.log("Server is shutting down");
+      console.log(`Server: ${config.ms.MS_NAME} is shutting down`);
       logger.closeLogging();
       process.exit();
     });
