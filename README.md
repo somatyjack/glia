@@ -14,33 +14,40 @@ Lightweight Microservice Framework
 
 ## Configure your service
 
-> Database\
-> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available)\
+> Database \
+> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available) \
 
 ## Setup routing
 
 ```
 const timeZones = {
-paramExpected: "timeZoneId", // param being passed with url
-batch: "LoadTimeZones", // service function to be called
-routeType: "internal", // how service is exposed internal | external
+    paramExpected: "timeZoneId", // param being passed with url
+    batch: "LoadTimeZones", // service function to be called
+    routeType: "internal", // how service is exposed internal | external
 };
 
 const routes = {
-"/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1
+    "/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1
 }
 ```
 
 ## Define service - Business Logic
 
 > all params will be available within data object
-> `LoadTimeZones: async (data) => { let timeZones timeZones = await getModel.GetTimeZones(data); return timeZones; }`
+
+```
+LoadTimeZones: async (data) => {
+    let timeZones timeZones = await getModel.GetTimeZones(data);
+    return timeZones;
+}
+```
 
 ## Define model - ( RAW | Sequelizer )
 
 > Raw MySQL access example
-> `
-> GetTimeZones: async function (data) {
+
+```
+GetTimeZones: async function (data) {
 
     const q = `SELECT * FROM time_zone WHERE active = 1`;
 
@@ -56,8 +63,8 @@ const routes = {
 
     return result;
 
-},
-`
+}
+```
 
 List of features:
 
