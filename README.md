@@ -19,34 +19,34 @@ Lightweight Microservice Framework
 
 ## Setup routing
 
-```
+```JavaScript
 const timeZones = {
-    paramExpected: "timeZoneId", // param being passed with url
+    paramExpected: "", // param being passed with url
     batch: "LoadTimeZones", // service function to be called
-    routeType: "internal", // how service is exposed internal | external
+    routeType: "internal", // how service is exposed internal || external
 };
 
 const routes = {
-    "/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1
+    "/v1/time-zones": timeZones, // each endpoint can be versioned, by default all enpoints use v1
 }
 ```
 
 ## Define service - Business Logic
 
-> all params will be available within data object
+> all passed params will be available within data object
 
-```
+```JavaScript
 LoadTimeZones: async (data) => {
     let timeZones timeZones = await getModel.GetTimeZones(data);
     return timeZones;
 }
 ```
 
-## Define model - ( RAW | Sequelizer )
+## Define model - ( RAW || Sequelizer )
 
 > Raw MySQL access example
 
-```
+```JavaScript
 GetTimeZones: async function (data) {
 
     const q = `SELECT * FROM time_zone WHERE active = 1`;
