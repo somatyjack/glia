@@ -15,7 +15,7 @@ const igniter = {
     logger.init(config);
 
     // TODO: Research on value of validating src at the micro service level
-    const whiteList = config.shared.corsWhiteList();
+    const whiteList = config.common.corsWhiteList();
 
     app.use((req, res, next) => {
       // if host requested resource internally -> origin will be undefined, so we need to check that host
@@ -53,8 +53,8 @@ const igniter = {
       console.log(`------------------------------------------------`);
       console.log(`Server: ${config.ms.MS_NAME} started on port: ${port}`);
       console.log(`Logs path: ${config.ms.LOGS_PATH}`);
-      console.log(`Validation path: ${config.ms.VALIDATION_PATH}`);
-      console.log(`Sanitization path: ${config.ms.SANITIZATION_PATH}`);
+      console.log(`Validation path: ${config.ms.VALIDATION_SCHEMAS_PATH}`);
+      console.log(`Sanitization path: ${config.ms.SANITIZATION_SCHEMAS_PATH}`);
       console.log(`------------------------------------------------`);
     });
 
