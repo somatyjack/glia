@@ -19,17 +19,17 @@ Lightweight Microservice Framework
 
 ## Setup routing
 
-`
-const timeZones = {\
-paramExpected: "timeZoneId", // param being passed with url\
-batch: "LoadTimeZones", // service function to be called\
-routeType: "internal", // how service is exposed internal | external\
-};\
+```
+const timeZones = {
+paramExpected: "timeZoneId", // param being passed with url
+batch: "LoadTimeZones", // service function to be called
+routeType: "internal", // how service is exposed internal | external
+};
 
 const routes = {
-"/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1  
+"/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1
 }
-`
+```
 
 ## Define service - Business Logic
 
