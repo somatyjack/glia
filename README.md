@@ -14,17 +14,17 @@ Lightweight Microservice Framework
 
 ## Configure your service
 
-> Database
-> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available)
+> Database\
+> Paths for Logs/Validation/Sanitization/Configs (Althought default values are available)\
 
 ## Setup routing
 
 `
-const timeZones = {
-paramExpected: "timeZoneId", // param being passed with url
-batch: "LoadTimeZones", // service function to be called
-routeType: "internal", // how service is exposed internal | external
-};
+const timeZones = {\
+paramExpected: "timeZoneId", // param being passed with url\
+batch: "LoadTimeZones", // service function to be called\
+routeType: "internal", // how service is exposed internal | external\
+};\
 
 const routes = {
 "/v1/time-zones": timeZones, // each endpoint can be version, by default all enpoints use v1  
