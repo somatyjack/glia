@@ -5,13 +5,14 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const logger = require("../middleware/logger/logger");
 const app = express();
-const router = require("./router.kernel");
+const cookies = require("cookie-parser");
+const { router } = require("./router.kernel");
 const { handleResponse } = require("./error.kernel");
 const { corsOptions } = require("./utils.kernel");
 
 const igniter = {
   start: function (appModules) {
-    const { config } = appModules;
+    const { config, middleware } = appModules;
     logger.init(config);
 
     // TODO: Research on value of validating src at the micro service level
@@ -32,6 +33,12 @@ const igniter = {
     // Parse incoming requests data
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(cookies());
+
+    // integrate custom middleware
+    middleware.forEach((middlewareHook) => {
+      app.use(middlewareHook);
+    });
 
     app.use(`/`, router);
 

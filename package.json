@@ -16,12 +16,11 @@
   ],
   "author": "Jack Milles",
   "dependencies": {
-    "@hapi/joi": "^15.0.1",
-    "@hapi/joi-date": "^1.3.0",
     "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "express": "^4.17.1",
-    "mysql2": "^1.6.5"
+    "jsonwebtoken": "^8.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.9.6",

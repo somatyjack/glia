@@ -1,19 +1,7 @@
-const Joi = require("@hapi/joi");
-const { DbError } = require("./error.kernel");
+/**
+ * Glia utils
+ */
 
-/* 
-	SHARED RULES - Passed by default from client/load balancer to server 
-	set to optional, because nginx will pass it, but between micros, they should be set manually
-******************/
-
-var sharedRules = {
-  callType: Joi.valid("direct", "transfer").required(),
-  userId: Joi.number().integer().optional(),
-  profileId: Joi.number().integer().optional(),
-  profileTz: Joi.string().optional(), // time zone
-};
-
-// abstraction function to avoid writing try/catch in each service
 const utils = {
   corsOptions: (whitelist) => {
     return {
@@ -26,33 +14,63 @@ const utils = {
       },
     };
   },
-  setReqUserVars: (req) => {
-    var uId = parseInt(req.header("uid"));
-    var profileId = parseInt(req.header("profileId"));
-    var profileTz = req.header("profileTz"); // Time zone
 
-    if (!uId && !profileId) return;
+  // extract nested routes
+  // TODO: Optimize more?
+  parseRoutePath: (req, routes) => {
+    if (req.params.length == 0) return null;
+    const paramString = req.params[0];
+    const params = paramString.split("/");
+    if (params.length <= 2) return null;
 
-    if (req.method == "GET") {
-      req.query.userId = uId;
-      req.query.profileId = profileId;
-      req.query.profileTz = profileTz;
-    } else if (req.method == "POST" || req.method == "DELETE") {
-      req.body.userId = uId;
-      req.body.profileId = profileId;
-      req.body.profileTz = profileTz;
+    let pathName = `/${params[1]}/${params[2]}`;
+    //
+    if (params.length === 3) {
+      if (!routes[req.method][pathName]) return null;
+      return {
+        route: routes[req.method][pathName],
+        serviceName: routes[req.method][pathName].batch,
+      };
     }
-  },
-  // add shared rules to all get/post/delete validations
-  addSharedRules: (schema) => {
-    // loop over service validations
-    for (const key in schema) {
-      // loop over shared rules and add them for each above validation
-      for (const rule in sharedRules) {
-        schema[key][rule] = sharedRules[rule];
+
+    // check if no.of params is even or odd
+    const isSingleton = params.length % 2 === 0 ? true : false;
+
+    if (params.length > 1) {
+      // this allows to identify is we are dealing with singleton or butch processing
+      const startIndex = isSingleton ? params.length - 2 : params.length - 1;
+
+      // get all routes for current method
+      let currentSubRoute = routes[req.method];
+
+      // extract every second param
+      // example /countries/2/regions/14/cities/367
+      // if nothing is sent array[0] = '/'
+      for (let idx = 4; idx <= params.length - 1; idx += 2) {
+        pathName += `/${params[idx]}`;
       }
+
+      // starting from the end, extract service name
+      let idx = startIndex;
+      currentSubRoute = currentSubRoute[pathName];
+      const paramExpected = currentSubRoute.paramExpected;
+
+      if (paramExpected !== "") {
+        // if singleton
+        if (params[idx + 1]) req.params[paramExpected] = params[idx + 1];
+        else req.params[paramExpected] = params[idx - 1]; // batch
+      }
+
+      return {
+        route: currentSubRoute,
+        serviceName: isSingleton
+          ? routes[req.method][pathName].singleton
+          : routes[req.method][pathName].batch,
+      };
     }
   },
+  /*
+ TO DELETE: ??
   wrapWithTransaction: async function (conn, qHandle, transName) {
     try {
       await conn.beginTransaction();
@@ -67,6 +85,7 @@ const utils = {
       throw new DbError(e.message, transName);
     }
   },
+  */
 };
 
 module.exports = utils;
