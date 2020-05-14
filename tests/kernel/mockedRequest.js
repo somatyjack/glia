@@ -1,7 +1,5 @@
 const mockedConfig = require("../mocked/mockedConfig");
 const mockedRoutes = require("../mocked/mockedRoutes");
-// const mockedValidator = require("../mocked/mockedValidator");
-// const mockedSanitizer = require("../mocked/mockedSanitizer");
 const mockedErrResponder = require("../mocked/mockedErrResponder");
 const mockedServices = require("../services");
 

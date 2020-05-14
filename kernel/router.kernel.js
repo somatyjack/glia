@@ -33,6 +33,8 @@ function validateRoute(req, res, next) {
       ? query.requestType
       : body.requestType;
 
+    req.isExternalRequest = route.routeAccess === "internal" ? false : true;
+
     // check if such service is available within service file
     if (!services[method][serviceName])
       throw new KernelError(

@@ -1,5 +1,4 @@
 const { hdlServiceChecks } = require("./ms.kernel");
-const logger = require("../middleware/logger/logger");
 
 const controller = async (req, res, next) => {
   const { services, errResponder, config } = req.app.kernel;
@@ -10,14 +9,12 @@ const controller = async (req, res, next) => {
     // validate request and passed arguments
     const data = hdlServiceChecks(req, next);
 
-    req.isExternalRoute = data.routeType === "internal" ? false : true;
-
     const serviceFunction = services[method][req.serviceName];
     // execute service API defined within .services files
     await serviceFunction(data)
       .then((rsp) => {
         const response =
-          req.isExternalRoute && config.ms.USE_CUSTOM_RESPONSE
+          req.isExternalRequest && config.ms.USE_CUSTOM_RESPONSE
             ? { status: "success", resp: rsp }
             : rsp;
 
