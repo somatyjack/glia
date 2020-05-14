@@ -1,3 +1,9 @@
 node_modules
 coverage
 tests
+logs
+kernel/__mocks__
+*.test.js
+jest.config
+.babelrc
+project.code-workspace

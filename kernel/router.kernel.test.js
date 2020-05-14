@@ -6,30 +6,33 @@ const mockedRequest = require("../tests/kernel/mockedRequest");
 const cities = {
   paramExpected: "regionId",
   batch: "LoadCitiesByRegionId",
-  routeAccess: "both",
+  routeAccess: "external",
+};
+
+const regions = {
+  paramExpected: "countryId",
+  batch: "LoadRegionsInternal",
+  routeAccess: "internal",
 };
 
 const routes = {
   GET: {
+    "/v1/countries/regions": regions,
     "/v1/countries/regions/cities": cities,
   },
 };
 
-const LoadCitiesByRegionId = async (data) => {
-  return [];
-};
-
 const services = {
   GET: {
-    LoadCitiesByRegionId,
+    LoadCitiesByRegionId: jest.fn(),
+    LoadRegionsInternal: jest.fn(),
   },
 };
 
 jest.mock("./controller.kernel");
 jest.mock("./token.kernel");
-
-const controller = require("./controller.kernel");
-const token = require("./token.kernel");
+let controller = require("./controller.kernel");
+let token = require("./token.kernel");
 
 const { validateRoute } = require("./router.kernel");
 
@@ -45,13 +48,32 @@ describe("router.kernel", () => {
         services: services,
       },
     };
+
+    //controller.clearAllMocks();
+    jest.clearAllMocks();
   });
 
-  it("route to controller - ", () => {
+  it("route to controller - external call check", () => {
     mockedParams.req.method = "GET";
+    mockedParams.req.queries = {};
     mockedParams.req.params = ["/v1/countries/1/regions/12/cities"];
     validateRoute(...Object.values(mockedParams));
     expect(controller).toHaveBeenCalledTimes(1);
-    //expect(token).toHaveBeenCalledTimes(1);
+  });
+
+  it("route to controller - internal call && requestType is specified", () => {
+    mockedParams.req.method = "GET";
+    mockedParams.req.query = { requestType: "internal" };
+    mockedParams.req.params = ["/v1/countries/1/regions"];
+    validateRoute(...Object.values(mockedParams));
+    expect(controller).toHaveBeenCalledTimes(1);
+  });
+
+  it("route to token - internal call && requestType is NOT specified", () => {
+    mockedParams.req.method = "GET";
+    mockedParams.req.query = {};
+    mockedParams.req.params = ["/v1/countries/1/regions"];
+    validateRoute(...Object.values(mockedParams));
+    expect(token).toHaveBeenCalledTimes(1);
   });
 });

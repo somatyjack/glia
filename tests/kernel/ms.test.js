@@ -26,9 +26,11 @@ describe("ms.kernel", () => {
     expect(data.queryTest).toBe("123");
     expect(data.paramsTest).toBe("456");
     expect(data.bodyTest).toBe("789");
+    expect(mockedParams.req.app.kernel.validate).toHaveBeenCalledTimes(1);
+    expect(mockedParams.req.app.kernel.sanitize).toHaveBeenCalledTimes(1);
   });
 
-  test("testing hdlServiceChecks Validation:Of | Sanitization:On", async () => {
+  test("testing hdlServiceChecks Validation:Off | Sanitization:On", async () => {
     mockedParams.req.method = "GET";
     mockedParams.req.serviceName = "GetTestWithQuery";
     mockedParams.req.query = { queryTest: "123" };

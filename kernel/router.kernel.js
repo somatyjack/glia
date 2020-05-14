@@ -44,6 +44,7 @@ function validateRoute(req, res, next) {
 
     // if routeAccess = internal AND this service is not called by other micro service -> validate token
     // otheriwise route traffic directly to controller
+
     if (route.routeAccess === "internal" && !serviceRequestType)
       token(req, res, next);
     else controller(req, res, next);

@@ -1,7 +1,7 @@
 const mockedConfig = require("../mocked/mockedConfig");
 const mockedRoutes = require("../mocked/mockedRoutes");
-const mockedValidator = require("../mocked/mockedValidator");
-const mockedSanitizer = require("../mocked/mockedSanitizer");
+// const mockedValidator = require("../mocked/mockedValidator");
+// const mockedSanitizer = require("../mocked/mockedSanitizer");
 const mockedErrResponder = require("../mocked/mockedErrResponder");
 const mockedServices = require("../services");
 
@@ -21,8 +21,10 @@ const mockedRequest = () => {
           config: mockedConfig,
           errResponder: mockedErrResponder,
           routes: mockedRoutes,
-          validate: mockedValidator,
-          sanitize: mockedSanitizer,
+          validate: jest.fn(),
+          sanitize: jest
+            .fn()
+            .mockImplementation((req, serviceName, data) => data),
           services: mockedServices,
         },
       },
