@@ -33,8 +33,7 @@ function validateRoute(req, res, next) {
       ? query.requestType
       : body.requestType;
 
-    req.isExternalRequest =
-      serviceRequestType && serviceRequestType === "internal" ? false : true;
+    req.isExternalRequest = serviceRequestType ? false : true;
 
     // check if such service is available within service file
     if (!services[method][serviceName])
