@@ -43,6 +43,7 @@ function validateRoute(req, res, next) {
 
     // this confirm that serviceName exists
     req.serviceName = serviceName;
+    req.pathName = route.pathName;
 
     // if routeAccess = internal AND this service is not called by other micro service -> validate token
     // otheriwise route traffic directly to controller

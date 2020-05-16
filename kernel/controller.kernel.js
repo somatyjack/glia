@@ -9,6 +9,9 @@ const controller = async (req, res, next) => {
     // validate request and passed arguments
     const data = hdlServiceChecks(req, next);
 
+    // assign all params from token to data
+    for (let key in req.userToken) data[key] = req.userToken[key];
+
     const serviceFunction = services[method][req.serviceName];
     // execute service API defined within .services files
     await serviceFunction(data)

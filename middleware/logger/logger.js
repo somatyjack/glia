@@ -79,6 +79,7 @@ const logStreams = {
   not_found: "error",
   kernel_error: "error",
   service_error: "error",
+  token_error: "info",
 };
 
 let logTypes = {};

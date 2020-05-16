@@ -25,11 +25,15 @@ const utils = {
 
     let pathName = `/${params[1]}/${params[2]}`;
     //
+    const subRoute = routes[req.method][pathName];
     if (params.length === 3) {
-      if (!routes[req.method][pathName]) return null;
+      if (!subRoute) return null;
+
+      subRoute.pathName = pathName;
+
       return {
-        route: routes[req.method][pathName],
-        serviceName: routes[req.method][pathName].batch,
+        route: subRoute,
+        serviceName: subRoute.batch,
       };
     }
 
@@ -53,6 +57,8 @@ const utils = {
       // starting from the end, extract service name
       let idx = startIndex;
       currentSubRoute = currentSubRoute[pathName];
+      currentSubRoute.pathName = pathName;
+
       const paramExpected = currentSubRoute.paramExpected;
 
       if (paramExpected !== "") {

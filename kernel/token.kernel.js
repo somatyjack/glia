@@ -7,17 +7,12 @@ const token = async (req, res, next) => {
     req.app.kernel.config.common.JWT_SECRET,
     (err, decoded) => {
       if (err) {
-        console.log("TOKEN ERROR:", err);
-        // token expired or does not exist, therefore we must dissallow accessing requested endpoint
+        logger.log("token_error", err.message, req.pathName);
+        // token expired or does not exist, therefore we must forbid accessing requested endpoint
         return res.status(403).send();
       }
 
-      console.log("DECODED STUFF::_______");
-      console.log(decoded);
-
-      //   req.query.userId = uId;
-      //   req.query.profileId = profileId;
-      //   req.query.profileTz = profileTz;
+      req.userToken = decoded.user;
 
       controller(req, res, next);
     }
