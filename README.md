@@ -6,7 +6,9 @@ Lightweight Microservice Framework
 
 [![codecov](https://codecov.io/gh/somatyjack/glia/branch/master/graph/badge.svg)](https://codecov.io/gh/somatyjack/glia)
 
-## For those, who want to go real web bananas
+## lets see how far I can make it
+
+<img width="531" alt="Glia-diagram" src="https://user-images.githubusercontent.com/10210303/82105252-44efe780-9712-11ea-83e1-a32d039c62e6.png">
 
 > All you should care at the end of the day is your business logic
 
