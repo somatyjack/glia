@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const controller = require("./controller.kernel");
+const logger = require("../middleware/logger/logger");
 
 const token = async (req, res, next) => {
   jwt.verify(
