@@ -21,6 +21,8 @@ const hdlServiceChecks = (req, next) => {
   if (config.ms.SANITIZATION_ENABLED)
     data = sanitize(req.method, req.serviceName, data);
 
+  if (config.ms.CASCADE_REQ) data["req"] = req;
+
   //if (config.cascadeRequest) data["req"] = req;
   return data;
 };
