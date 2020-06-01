@@ -27,8 +27,12 @@ const igniter = {
       if (!req.headers.origin)
         if (whiteList.indexOf(req.headers.host) !== -1)
           req.headers.origin = req.headers.host;
+
+      if (config.common.env === "prod") cors(corsOptions(whiteList));
+      else cors();
+
       next();
-    }, cors(corsOptions(whiteList)));
+    });
 
     // Parse incoming requests data
     app.use(bodyParser.json());
