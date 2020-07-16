@@ -1,6 +1,6 @@
-const { hdlServiceChecks } = require("./ms.kernel");
+const { hdlServiceChecks } = require("./ms");
 const logger = require("glia/middleware/logger/logger");
-const { ValidationError } = require("glia/kernel/error.kernel");
+const { ValidationError } = require("glia/kernel/error");
 
 const controller = async (req, res, next) => {
     const { services, errResponder, config } = req.app.kernel;
