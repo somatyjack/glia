@@ -1,8 +1,8 @@
-const hdlServiceChecks = (req, next) => {
-  const { config, validate, sanitize } = req.app.kernel;
+const hdlServiceChecks = (req, data) => {
+    const { config, validate, sanitize } = req.app.kernel;
 
-  // if POST, save action to activity table - only for direct requests for now..
-  /*
+    // if POST, save action to activity table - only for direct requests for now..
+    /*
   if (config.savePostActivity && req.method === "POST" && req.isExternalRoute) {
     PostAndForget(route.activity("NewActivity"), {
       ...bodyParams,
@@ -10,21 +10,28 @@ const hdlServiceChecks = (req, next) => {
     });
   }
 */
-  // copy all into one
-  let data = {};
-  for (const key in req.params) data[key] = req.params[key];
-  for (const key in req.query) data[key] = req.query[key];
-  for (const key in req.body) data[key] = req.body[key];
+    // copy all into one
 
-  if (config.ms.VALIDATION_ENABLED) validate(req.method, req.serviceName, data);
+    for (const key in req.params) data[key] = req.params[key];
+    for (const key in req.query) data[key] = req.query[key];
+    for (const key in req.body) data[key] = req.body[key];
 
-  if (config.ms.SANITIZATION_ENABLED)
-    data = sanitize(req.method, req.serviceName, data);
+    if (config.ms.VALIDATION_ENABLED) {
+        const [hasError, errMessage] = validate(
+            req.method,
+            req.serviceName,
+            data
+        );
+        if (hasError) return [hasError, errMessage];
+    }
 
-  if (config.ms.CASCADE_REQ) data["req"] = req;
+    if (config.ms.SANITIZATION_ENABLED)
+        data = sanitize(req.method, req.serviceName, data);
 
-  //if (config.cascadeRequest) data["req"] = req;
-  return data;
+    if (config.ms.CASCADE_REQ) data["req"] = req;
+
+    //if (config.cascadeRequest) data["req"] = req;
+    return [false, ""];
 };
 
 /* breaks down routes mapping into correct access pools
@@ -72,6 +79,6 @@ const routeAccessProcessor = (allRoutes) => {
 */
 
 module.exports = {
-  hdlServiceChecks,
-  //routeAccessProcessor,
+    hdlServiceChecks,
+    //routeAccessProcessor,
 };
