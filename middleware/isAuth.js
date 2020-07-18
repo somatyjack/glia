@@ -9,7 +9,9 @@ const isAuth = (req, res, next) => {
             if (err) {
                 logger.log("token_error", err.message, req.path);
                 // token expired or does not exist, therefore we must forbid accessing requested endpoint
-                return res.status(401).send({success:false,message:err.message});
+                return res
+                    .status(401)
+                    .send({ success: false, message: err.message });
             }
 
             req.userToken = decoded.user;

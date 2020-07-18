@@ -56,7 +56,7 @@ const igniter = {
         });
 
         // to delete
-        const errors = require("./error.kernel");
+        const errors = require("./error");
         errors.InitErrorCodes(config.ms.ERROR_CODES);
 
         const port = config.ms.PORT;
