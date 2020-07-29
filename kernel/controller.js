@@ -1,16 +1,20 @@
 const hdlServiceChecks = require("./serviceCheck");
 const logger = require("glia/middleware/logger/logger");
-// const { ValidationError } = require("glia/kernel/error");
 
 const controller = async (req, res, next) => {
-    const { services, errResponder, config } = req.app.kernel;
+    const { routeMap, services, providers, config } = req.app.kernel;
 
     const method = req.method;
+
+    // get route based on first 2 values
+    const subPath = req.path.split("/");
+    const fullPath = `/${subPath[1]}/${subPath[2]}`;
+    const { service, provider } = routeMap[req.method][fullPath];
+
     let data = {};
 
-    //try {
     // validate request and passed arguments
-    const [hasError, errMessage] = hdlServiceChecks(req, data);
+    const [hasError, errMessage] = hdlServiceChecks(service, req, data);
     if (hasError) {
         logger.log("error", errMessage, "validation");
         return res.status(200).send({ success: false, message: errMessage });
@@ -20,43 +24,30 @@ const controller = async (req, res, next) => {
     // assign all params from token to data
     for (let key in req.userToken) data[key] = req.userToken[key];
 
-    const serviceFunction = services[method][req.serviceName];
-    // execute service API defined within .services files
     try {
+        if (provider) {
+            // get provider function - check user permissions
+            const extractIds = providers[provider];
+
+            const isDone = await extractIds(data);
+            if (!isDone) {
+                res.status(403).send({
+                    success: false,
+                    message: "Access denied",
+                });
+            }
+        }
+
+        const serviceFunction = services[method][service];
+        // execute service API defined within .services files
+
         const response = await serviceFunction(data);
 
         res.status(200).send({ success: true, response });
     } catch (err) {
+        logger.log("error", err.message, "controller");
         next(err);
     }
-    //.then((response) => {
-    /*
-        const response =
-          req.isExternalRequest && config.ms.USE_CUSTOM_RESPONSE
-            ? { status: "success", resp: rsp }
-            : rsp;
-        */
-
-    //res.status(200).send({ success:true, response });
-    //})
-    //.catch((err) => {
-
-    //next(err);
-    /*
-        // check if we have a RunTime error or programmatically controlled
-        if (!err.customCode)
-          // only extended errors will have this field
-          errResponder["error"](err.stack, "RuntimeError");
-        // this will also log error message and its location
-        else errResponder[err.customCode](err.message, err.errLocation);
-        */
-    //});
-    //} catch (err) {
-    // this will trigger error handling middleware
-    // and response will be sent back
-    // this won't log anything
-    //next(err);
-    //}
 };
 
 module.exports = controller;

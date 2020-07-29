@@ -1,4 +1,4 @@
-const hdlServiceChecks = (req, data) => {
+const hdlServiceChecks = (serviceName, req, data) => {
     const { config, validate, sanitize } = req.app.kernel;
 
     for (const key in req.params) data[key] = req.params[key];
@@ -6,16 +6,13 @@ const hdlServiceChecks = (req, data) => {
     for (const key in req.body) data[key] = req.body[key];
 
     if (config.ms.VALIDATION_ENABLED) {
-        const [hasError, errMessage] = validate(
-            req.method,
-            req.serviceName,
-            data
-        );
+        const [hasError, errMessage] = validate(req.method, serviceName, data);
+
         if (hasError) return [hasError, errMessage];
     }
 
     if (config.ms.SANITIZATION_ENABLED)
-        data = sanitize(req.method, req.serviceName, data);
+        data = sanitize(req.method, serviceName, data);
 
     if (config.ms.CASCADE_REQ) data["req"] = req;
 

@@ -31,18 +31,6 @@ const utils = {
         } catch (e) {
             logger.log("error", e.message, `PostData - ${url}`);
         }
-
-        /*
-                .then(function (res) {
-                    resolve(res.data);
-                })
-                .catch((error) => {
-                    if (error.code == "ECONNREFUSED")
-                        console.log("Refused to connect to:" + url);
-
-                    reject(error.response.data);
-                });
-                */
     },
     DeleteData: async (url, params = {}) => {
         let newParams = params;
@@ -56,17 +44,6 @@ const utils = {
         } catch (e) {
             logger.log("error", e.message, `PostData - ${url}`);
         }
-        /*
-                .then(function (res) {
-                    resolve(res.data);
-                })
-                .catch((error) => {
-                    if (error.code == "ECONNREFUSED")
-                        console.log("Refused to connect to:" + url);
-
-                    reject(error.response.data);
-                });
-                */
     },
     ConvertToHoursMins: (time) => {
         if (time < 1) return "00:00";

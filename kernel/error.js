@@ -85,6 +85,8 @@ class KernelError extends Error {
 const handleResponse = (err, res) => {
     const { httpCode, customCode, message } = err;
 
+    console.log(httpCode, customCode, message);
+
     if (customCode !== "success" && customCode !== "service_info")
         logger.log(customCode, err.message, err.errLocation);
 

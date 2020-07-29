@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 const logger = require("../middleware/logger/logger");
 
 const isAuth = (req, res, next) => {
+    // bypass token validation if internal call, since token will be validated
+    // on first service call
+    if (res.locals.isInternallCall) next();
+
     jwt.verify(
         req.cookies.accessTkn,
         req.app.kernel.config.common.JWT_SECRET,
