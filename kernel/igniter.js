@@ -19,21 +19,24 @@ const igniter = {
         // TODO: Research on value of validating src at the micro service level
         const whiteList = config.common.corsWhiteList();
 
-        app.use((req, res, next) => {
-            // if host requested resource internally -> origin will be undefined, so we need to check that host
-            // is part of the allowed list, otherwise forbid
-            // Need to log Origin and Host
-            //console.log(req.headers.origin)
-            //console.log(req.headers.host)
-            if (!req.headers.origin)
-                if (whiteList.indexOf(req.headers.host) !== -1)
-                    req.headers.origin = req.headers.host;
+        const corsOptionsDelegate = function (req, callback) {
+            let corsOptions;
+            let corsError = null;
+            const origin = req.header("Origin");
 
-            if (config.common.env === "prod") cors(corsOptions(whiteList));
-            else cors();
+            // allow localhost and forbid non whiteList hosts
+            if (whiteList.indexOf(origin) !== -1 || !origin) {
+                corsOptions = { origin: true, credentials: true }; // reflect (enable) the requested origin in the CORS response
+            } else {
+                corsOptions = { origin: false }; // disable CORS for this request
+                corsError = new Error(origin + " not allowed by CORS");
+            }
+            callback(corsError, corsOptions); // callback expects two parameters: error and options
+        };
 
-            next();
-        });
+        app.use(
+            cors(config.common.env === "prod" ? corsOptionsDelegate : null)
+        );
 
         // Parse incoming requests data
         app.use(bodyParser.urlencoded({ extended: false }));

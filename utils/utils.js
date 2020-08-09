@@ -27,7 +27,8 @@ const utils = {
                 config: { headers: { "Content-Type": "multipart/form-data" } },
             });
             if (!data.success) return false;
-            else return data.response;
+            // if not data returned, return true
+            else return data.response || true;
         } catch (e) {
             logger.log("error", e.message, `PostData - ${url}`);
         }

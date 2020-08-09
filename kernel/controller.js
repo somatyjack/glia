@@ -9,12 +9,14 @@ const controller = async (req, res, next) => {
     // get route based on first 2 values
     const subPath = req.path.split("/");
     const fullPath = `/${subPath[1]}/${subPath[2]}`;
-    const { service, provider } = routeMap[req.method][fullPath];
+    const route = routeMap[method][fullPath];
+
+    const { service, validation, provider } = route;
 
     let data = {};
 
     // validate request and passed arguments
-    const [hasError, errMessage] = hdlServiceChecks(service, req, data);
+    const [hasError, errMessage] = hdlServiceChecks(route, req, data);
     if (hasError) {
         logger.log("error", errMessage, "validation");
         return res.status(200).send({ success: false, message: errMessage });
@@ -40,7 +42,6 @@ const controller = async (req, res, next) => {
 
         const serviceFunction = services[method][service];
         // execute service API defined within .services files
-
         const response = await serviceFunction(data);
 
         res.status(200).send({ success: true, response });

@@ -11,8 +11,6 @@ function schemasLoader(basePath, fileType) {
         DELETE: undefined,
     };
 
-    const commonRules = require(`${basePath}/common.${fileType}`);
-
     for (const key in schemas) {
         // try to load file
         let schema = false;
@@ -20,21 +18,13 @@ function schemasLoader(basePath, fileType) {
             schema = require(`${basePath}/${key.toLocaleLowerCase()}.${fileType}`);
         } catch (e) {
             /* do not enforce having a file in directory
-        if (e.code === "MODULE_NOT_FOUND") {
-        throw e;
-      }
-      */
+            if (e.code === "MODULE_NOT_FOUND") {
+            throw e;
+        }
+        */
         }
 
         schema = Object.keys(schema).length !== 0 ? schema : {};
-
-        // loop over service validations
-        for (const key in schema) {
-            // loop over shared rules and add them for each above validation
-            for (const rule in commonRules) {
-                schema[key][rule] = commonRules[rule];
-            }
-        }
 
         schemas[key] = schema;
     }
