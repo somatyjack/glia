@@ -1,5 +1,6 @@
 const mockedConfig = require("../mocked/mockedConfig");
-const mockedRoutes = require("../mocked/mockedRoutes");
+const mockedRouter = require("../mocked/mockedRouter");
+const mockedRouteMap = require("../mocked/mockedRouteMap");
 const mockedServices = require("../services");
 
 const mockedRequest = () => {
@@ -16,8 +17,8 @@ const mockedRequest = () => {
             app: {
                 kernel: {
                     config: mockedConfig,
-                    routes: mockedRoutes,
-                    validate: jest.fn(),
+                    router: mockedRouter,
+                    routeMap: mockedRouteMap,
                     sanitize: jest
                         .fn()
                         .mockImplementation((req, serviceName, data) => data),

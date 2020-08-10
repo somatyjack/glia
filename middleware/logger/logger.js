@@ -30,7 +30,7 @@ function getFilePath(logType) {
 function createNewFile(logType, options) {
     const filePath = getFilePath(logType);
     let stream = fs.createWriteStream(filePath, options);
-    //stream.write("{"); for now no
+
     return stream;
 }
 
@@ -39,13 +39,6 @@ function checkFile(logType, callback) {
     // reopening file, by removing last }
     const path = getFilePath(logType);
     fs.access(path, fs.F_OK, (err) => {
-        /*
-		if(err && err.code === "ENOENT"){
-			callback(createNewFile(logType,{}));
-		} else {
-				
-		}	
-		*/
         callback(createNewFile(logType, { flags: "a" }));
     });
 }
@@ -93,12 +86,6 @@ async function assignStream(logType) {
 
 const options = {
     init: function (config) {
-        /*
-    Object.assign(this, {
-      loggerConfig: config,
-    });
-*/
-
         gblConfig = config;
 
         if (!config.ms.LOGS_ENABLED) return;
@@ -147,12 +134,6 @@ const options = {
     },
     closeLogging: () => {
         if (!gblConfig.ms.LOGS_ENABLED) return;
-
-        /*
-		Object.keys(logTypes).forEach((key) => {
-			logTypes[key].write("}");
-		});
-		*/
     },
 };
 

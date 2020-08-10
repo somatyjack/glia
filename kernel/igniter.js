@@ -6,10 +6,8 @@ const cors = require("cors");
 const logger = require("../middleware/logger/logger");
 const app = express();
 const cookies = require("cookie-parser");
-//const { router } = require("./router.kernel");
 
 const { handleResponse } = require("./error");
-const { corsOptions } = require("./utils");
 
 const igniter = {
     start: function (appModules) {

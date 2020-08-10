@@ -1,5 +1,5 @@
-const logger = require("glia/middleware/logger/logger");
-const errorMapper = require("glia/utils/errorMapper");
+const logger = require("../middleware/logger/logger");
+const errorMapper = require("../utils/errorMapper");
 
 /**
  * Set of Errors for Client to better handle user behaviour
@@ -84,8 +84,6 @@ class KernelError extends Error {
 // service response handler
 const handleResponse = (err, res) => {
     const { httpCode, customCode, message } = err;
-
-    console.log(httpCode, customCode, message);
 
     if (customCode !== "success" && customCode !== "service_info")
         logger.log(customCode, err.message, err.errLocation);

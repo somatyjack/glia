@@ -1,8 +1,8 @@
 const hdlServiceChecks = require("./serviceCheck");
-const logger = require("glia/middleware/logger/logger");
+const logger = require("../middleware/logger/logger");
 
 const controller = async (req, res, next) => {
-    const { routeMap, services, providers, config } = req.app.kernel;
+    const { routeMap, services, providers } = req.app.kernel;
 
     const method = req.method;
 
@@ -11,7 +11,18 @@ const controller = async (req, res, next) => {
     const fullPath = `/${subPath[1]}/${subPath[2]}`;
     const route = routeMap[method][fullPath];
 
-    const { service, validation, provider } = route;
+    if (!route) {
+        logger.log(
+            "error",
+            `${method} route for ${fullPath} does not exist`,
+            "controller"
+        );
+        return res
+            .status(404)
+            .send({ success: false, message: "route not found" });
+    }
+
+    const { service, provider } = route;
 
     let data = {};
 
@@ -20,18 +31,18 @@ const controller = async (req, res, next) => {
     if (hasError) {
         logger.log("error", errMessage, "validation");
         return res.status(200).send({ success: false, message: errMessage });
-        //throw new ValidationError(errMessage, "hdlServiceChecks");
     }
 
     // assign all params from token to data
     for (let key in req.userToken) data[key] = req.userToken[key];
 
     try {
+        /* NOT USED FOR NOW - future proof
         if (provider) {
-            // get provider function - check user permissions
-            const extractIds = providers[provider];
+            // get provider function - check pre service requirements
+            const preServiceValid = providers[provider];
 
-            const isDone = await extractIds(data);
+            const isDone = await preServiceValid(data);
             if (!isDone) {
                 res.status(403).send({
                     success: false,
@@ -39,6 +50,7 @@ const controller = async (req, res, next) => {
                 });
             }
         }
+        */
 
         const serviceFunction = services[method][service];
         // execute service API defined within .services files

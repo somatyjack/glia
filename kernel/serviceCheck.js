@@ -1,9 +1,7 @@
 const Joi = require("@hapi/joi");
-const logger = require("glia/middleware/logger/logger");
+const logger = require("../middleware/logger/logger");
 
 const schemaValidator = (route, dataToValidate) => {
-    // get validation schema
-    //const validationSchema = validationSchemas[method][serviceName];
     const validationSchema = route.schema;
     if (!validationSchema) {
         logger.log(
@@ -44,7 +42,7 @@ const schemaValidator = (route, dataToValidate) => {
 };
 
 const hdlServiceChecks = (route, req, data) => {
-    const { config, validate, sanitize } = req.app.kernel;
+    const { config, sanitize } = req.app.kernel;
 
     for (const key in req.params) data[key] = req.params[key];
     for (const key in req.query) data[key] = req.query[key];
@@ -61,7 +59,6 @@ const hdlServiceChecks = (route, req, data) => {
 
     if (config.ms.CASCADE_REQ) data["req"] = req;
 
-    //if (config.cascadeRequest) data["req"] = req;
     return [false, ""];
 };
 
